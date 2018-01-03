@@ -1,28 +1,39 @@
-var rockets, count, barrierWidth, barrierHeight;
-var lifespan = 500;
+var population, time, barrierWidth, barrierHeight, targetLocation, targetRadius, keptPopPercent;
+var lifespan = 300;
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
-  rockets = new Population(25);
-  count = 0;
-  barrierWidth = width * 2/3;
+  population = new Population(100);
+  time = 0;
+  barrierWidth = width * 1/2;
   barrierHeight = 20;
+  targetLocation = createVector(width/2, height * 1/6);
+  targetRadius = 40;
+  keptPopPercent = 0.5
 }
 
 function draw() {
   background(0);
 
-  rockets.update(count);
-  createBarrier();
+  population.run();
+  drawBarrier();
+  drawTarget();
 
-  count++;
+  time++;
 }
 
-function createBarrier(){
+function drawBarrier(){
     push();
     translate(width/2, height/2);
     rectMode(CENTER);
     rect(0,0, barrierWidth, barrierHeight);
+    pop();
+}
+
+function drawTarget(){
+    push();
+    fill(244, 78, 66);
+    ellipse(targetLocation.x, targetLocation.y, targetRadius*2);
     pop();
 }
 
