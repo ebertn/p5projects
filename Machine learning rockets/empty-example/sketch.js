@@ -9,7 +9,7 @@ function setup() {
   barrierHeight = 20;
   targetLocation = createVector(width/2, height * 1/6);
   targetRadius = 40;
-  keptPopPercent = 0.5
+  keptPopPercent = 0.25;
 }
 
 function draw() {
@@ -39,4 +39,5 @@ function drawTarget(){
 
 function windowResized() {
     resizeCanvas(windowWidth, windowHeight);
+    targetLocation = createVector(width/2, height * 1/6);
 }

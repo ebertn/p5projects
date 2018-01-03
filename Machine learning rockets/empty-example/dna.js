@@ -1,8 +1,7 @@
 class DNA {
     constructor(behavior){
         this.behavior = [];
-        this.score = 0;
-        
+
         if(behavior){
             this.behavior = behavior;
         } else {

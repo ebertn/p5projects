@@ -1,17 +1,21 @@
 class Rocket{
-    constructor(){
+    constructor(behavior){
         this.pos = createVector(width/2, height * .95);
-        this.vel = p5.Vector.random2D();
+        this.vel = createVector();
         this.acc = createVector();
 
         this.moving = true;
         this.angle = 0;
+        this.score = 0;
+        this.cumScore = 0;
 
-        this.genes = new DNA();
+        this.genes = new DNA(behavior);
     }
 
     update(time) {
-        if(!this.isTouchingBarrier() && !this.isTouchingTarget() && time < lifespan){
+        if(this.shouldMove() && time < lifespan){
+            this.cumScore += this.getScore();
+
             this.applyForce(this.genes.behavior[time]);
 
             this.vel.add(this.acc);
@@ -32,7 +36,7 @@ class Rocket{
         fill(154, 26, 239, 160);
 
         translate(this.pos.x, this.pos.y);
-        if(!this.isTouchingBarrier() && !this.isTouchingTarget()){
+        if(this.shouldMove()){
             this.angle = this.vel.heading() + PI/2;
         }
         rotate(this.angle);
@@ -42,25 +46,30 @@ class Rocket{
     }
 
     isTouchingBarrier(){
-        if((this.pos.x > width/2 - barrierWidth/2 && // Touching barrier
+        return (this.pos.x > width/2 - barrierWidth/2 && // Touching barrier
            this.pos.x < width/2 + barrierWidth/2) &&
            (this.pos.y > height/2 - barrierHeight/2 &&
-           this.pos.y < height/2 + barrierHeight/2)){
-            return true;
-        }
-        if(this.pos.x < 0 || this.pos.x > width || this.pos.y < 0 || this.pos.y > height){
-            return true;
-        }
-        return false;
+           this.pos.y < height/2 + barrierHeight/2);
+    }
+
+    isTouchingWall(){
+        return this.pos.x < 0 || this.pos.x > width || this.pos.y < 0 || this.pos.y > height;
     }
 
     isTouchingTarget(){
         return dist(this.pos.x, this.pos.y, targetLocation.x, targetLocation.y) < targetRadius;
     }
 
+    shouldMove(){
+        return !this.isTouchingBarrier() && !this.isTouchingTarget() && !this.isTouchingWall();
+    }
+
     getScore(){
         this.score = 1000 / dist(this.pos.x, this.pos.y, targetLocation.x, targetLocation.y);
         if(this.isTouchingBarrier()){
+            this.score /= 20;
+        }
+        if(this.isTouchingWall()){
             this.score /= 5;
         }
         if(this.isTouchingTarget()){
